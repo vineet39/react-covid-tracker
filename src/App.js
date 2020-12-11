@@ -12,12 +12,17 @@ function App() {
   const [country, setCountry] = useState('worldwide')
   const [countryInfo, setCountryInfo] = useState({})
   const [tableData, setTableData] = useState([])
-  const [casesType, setCasesType] = useState("cases");
   const details = {
     cases: { title: "Cases", cases: countryInfo.todayCases, total: countryInfo.cases },
     recovered: { title: "Recovered", cases: countryInfo.todayRecovered, total: countryInfo.recovered },
     deaths: { title: "Deaths", cases: countryInfo.todayDeaths, total: countryInfo.deaths }
   };
+  const caseTypes = {
+    cases: { title: 'New', value: 'cases' },
+    recovered: { title: 'Recovered', value: 'recovered' },
+    deaths: { title: 'Death', value: 'deaths' }
+  }
+  const [casesType, setCasesType] = useState(caseTypes.cases.value);
   const items = Object.keys(details).map(key =>
     <InfoBox key={key} title={details[key].title} cases={details[key].cases} total={details[key].total} />
   );
@@ -32,6 +37,10 @@ function App() {
       .then(data => {
         setCountryInfo(data);
       })
+  }
+  const onCaseTypeChange = async (event) => {
+    const caseType = event.target.value;
+    setCasesType(caseType);
   }
   useEffect(() => {
     fetch('https://disease.sh/v3/covid-19/all')
@@ -83,7 +92,21 @@ function App() {
         <CardContent>
           <h3>Live cases</h3>
           <Table countries={tableData} />
-          <h3 className="title">WorldWide cases</h3>
+          <div className="graph_heading">
+          <h3 className="title">Worldwide cases</h3>
+          <FormControl>
+            <Select
+              variant="outlined"
+              value={casesType}
+              onChange={onCaseTypeChange}>
+              {
+                Object.keys(caseTypes).map(key =>
+                  <MenuItem key={caseTypes[key].title} value={caseTypes[key].value}>{caseTypes[key].title}</MenuItem>
+                )
+              }
+            </Select>
+          </FormControl>
+          </div>
           <LineGraph casesType={casesType} />
         </CardContent>
       </Card>

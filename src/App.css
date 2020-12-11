@@ -38,6 +38,16 @@ body {
     margin-bottom: 20px;
 }
 
+.graph_heading {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+}
+
+.graph_heading h3 {
+    flex: 1;
+}
+
 @media (max-width: 990px) {
     .app {
         flex-direction: column;
