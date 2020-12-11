@@ -6,6 +6,12 @@ body {
     background-color: #f5f6fa;
 }
 
+.app {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px;
+}
+
 .app_header {
     display: flex;
     flex-direction: row;
@@ -13,7 +19,30 @@ body {
     margin-bottom: 20px;
 }
 
+.app_left {
+    flex: 0.9;
+}
+
+.app_right {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
 .app_stats {
     display: flex;
     justify-content: space-between;
+}
+
+.title {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 990px) {
+    .app {
+        flex-direction: column;
+    }
+    .app_left {
+        margin-bottom: 20px;
+    }
 }

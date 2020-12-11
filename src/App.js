@@ -2,22 +2,44 @@ import { useState, useEffect } from 'react';
 import { FormControl, Select, MenuItem, Card, CardContent } from '@material-ui/core';
 import './App.css';
 import InfoBox from './InfoBox';
+import userEvent from '@testing-library/user-event';
+import Table from './Table';
+import { sortData } from './util';
+import LineGraph from './LineGraph';
 
 function App() {
   const [countries, setCountries] = useState(['USA', 'UK', 'INDIA'])
   const [country, setCountry] = useState('worldwide')
+  const [countryInfo, setCountryInfo] = useState({})
+  const [tableData, setTableData] = useState([])
+  const [casesType, setCasesType] = useState("cases");
   const details = {
-    cases: { title: "Cases", cases: 2000, total: 1000 },
-    recovered: { title: "Recovered", cases: 3000, total: 2000 },
-    deaths: { title: "Deaths", cases: 4000, total: 3000 }
+    cases: { title: "Cases", cases: countryInfo.todayCases, total: countryInfo.cases },
+    recovered: { title: "Recovered", cases: countryInfo.todayRecovered, total: countryInfo.recovered },
+    deaths: { title: "Deaths", cases: countryInfo.todayDeaths, total: countryInfo.deaths }
   };
   const items = Object.keys(details).map(key =>
     <InfoBox key={key} title={details[key].title} cases={details[key].cases} total={details[key].total} />
   );
-  const onCountryChange = (event) => {
+  const onCountryChange = async (event) => {
     const countryValue = event.target.value;
     setCountry(countryValue);
+
+    const url = countryValue === 'worldwide' ? `https://disease.sh/v3/covid-19/all` : `https://disease.sh/v3/covid-19/countries/${countryValue}`;
+
+    await fetch(url)
+      .then(r => r.json())
+      .then(data => {
+        setCountryInfo(data);
+      })
   }
+  useEffect(() => {
+    fetch('https://disease.sh/v3/covid-19/all')
+      .then(r => r.json())
+      .then(data => {
+        setCountryInfo(data);
+      })
+  }, [])
   useEffect(() => {
     const getCountriesData = async () => {
       await fetch('https://disease.sh/v3/covid-19/countries')
@@ -27,6 +49,8 @@ function App() {
             name: country.country,
             value: country.countryInfo.iso2
           }));
+          const sortedResponse = sortData(response);
+          setTableData(sortedResponse);
           setCountries(countries);
         });
     }
@@ -58,7 +82,9 @@ function App() {
       <Card className="app_right">
         <CardContent>
           <h3>Live cases</h3>
-          <h3>WorldWide cases</h3>
+          <Table countries={tableData} />
+          <h3 className="title">WorldWide cases</h3>
+          <LineGraph casesType={casesType} />
         </CardContent>
       </Card>
     </div>
