@@ -1,0 +1,5 @@
+@media (max-width: 500px) {
+    .infoBox:not(:last-child) {
+        margin-bottom: 10px;
+    }
+}

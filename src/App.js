@@ -6,6 +6,8 @@ import userEvent from '@testing-library/user-event';
 import Table from './Table';
 import { sortData } from './util';
 import LineGraph from './LineGraph';
+import Map from './Map';
+import 'leaflet/dist/leaflet.css';
 
 function App() {
   const [countries, setCountries] = useState(['USA', 'UK', 'INDIA'])
@@ -23,6 +25,9 @@ function App() {
     deaths: { title: 'Death', value: 'deaths' }
   }
   const [casesType, setCasesType] = useState(caseTypes.cases.value);
+  const [mapCenter, setMapCenter] = useState({ lat: 34.80, lng: -40.47 })
+  const [mapZoom, setMapZoom] = useState(3)
+  const [mapCountries, setMapCountries] = useState([])
   const items = Object.keys(details).map(key =>
     <InfoBox key={key} title={details[key].title} cases={details[key].cases} total={details[key].total} />
   );
@@ -36,6 +41,8 @@ function App() {
       .then(r => r.json())
       .then(data => {
         setCountryInfo(data);
+        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+        setMapZoom(4);
       })
   }
   const onCaseTypeChange = async (event) => {
@@ -61,6 +68,7 @@ function App() {
           const sortedResponse = sortData(response);
           setTableData(sortedResponse);
           setCountries(countries);
+          setMapCountries(response);
         });
     }
     getCountriesData();
@@ -69,7 +77,7 @@ function App() {
     <div className="app">
       <div className="app_left">
         <div className="app_header">
-          <h1>Lets Begin</h1>
+          <h1>COVID-19 Tracker</h1>
           <FormControl>
             <Select
               variant="outlined"
@@ -87,25 +95,26 @@ function App() {
         <div className="app_stats">
           {items}
         </div>
+        <Map center={mapCenter} zoom={mapZoom} countries={mapCountries}/>
       </div>
       <Card className="app_right">
         <CardContent>
           <h3>Live cases</h3>
           <Table countries={tableData} />
           <div className="graph_heading">
-          <h3 className="title">Worldwide cases</h3>
-          <FormControl>
-            <Select
-              variant="outlined"
-              value={casesType}
-              onChange={onCaseTypeChange}>
-              {
-                Object.keys(caseTypes).map(key =>
-                  <MenuItem key={caseTypes[key].title} value={caseTypes[key].value}>{caseTypes[key].title}</MenuItem>
-                )
-              }
-            </Select>
-          </FormControl>
+            <h3 className="title">Worldwide cases</h3>
+            <FormControl>
+              <Select
+                variant="outlined"
+                value={casesType}
+                onChange={onCaseTypeChange}>
+                {
+                  Object.keys(caseTypes).map(key =>
+                    <MenuItem key={caseTypes[key].title} value={caseTypes[key].value}>{caseTypes[key].title}</MenuItem>
+                  )
+                }
+              </Select>
+            </FormControl>
           </div>
           <LineGraph casesType={casesType} />
         </CardContent>
