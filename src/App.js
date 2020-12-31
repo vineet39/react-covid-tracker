@@ -58,18 +58,16 @@ function App() {
   }, [])
   useEffect(() => {
     const getCountriesData = async () => {
-      await fetch('https://disease.sh/v3/covid-19/countries')
-        .then(response => response.json())
-        .then(response => {
-          const countries = response.map((country) => ({
-            name: country.country,
-            value: country.countryInfo.iso2
-          }));
-          const sortedResponse = sortData(response);
-          setTableData(sortedResponse);
-          setCountries(countries);
-          setMapCountries(response);
-        });
+      const response = await fetch('https://disease.sh/v3/covid-19/countries');
+      const responseJSON = await response.json();
+      const countries = await responseJSON.map((country) => ({
+        name: country.country,
+        value: country.countryInfo.iso2
+      }));
+      setCountries(countries);
+      setMapCountries(responseJSON)
+      const sortedResponse = await sortData(responseJSON);
+      setTableData(sortedResponse);
     }
     getCountriesData();
   }, [])
@@ -95,7 +93,7 @@ function App() {
         <div className="app_stats">
           {items}
         </div>
-        <Map center={mapCenter} zoom={mapZoom} countries={mapCountries}/>
+        <Map center={mapCenter} zoom={mapZoom} countries={mapCountries} />
       </div>
       <Card className="app_right">
         <CardContent>

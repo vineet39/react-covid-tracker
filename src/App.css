@@ -58,7 +58,11 @@ body {
 }
 
 @media (max-width: 500px) {
-    .app_stats {
+    .app_stats,
+    .app_header {
         flex-direction: column;
+    }
+    .app_header h1 {
+        margin-bottom: 20px;
     }
 }
