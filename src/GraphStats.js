@@ -1,27 +1,19 @@
 import React from 'react';
 import LineGraph from './LineGraph';
-import { FormControl, Select, MenuItem } from '@material-ui/core';
 import Aux from './hoc/Aux';
+import { caseTypes } from './constants';
+import { useContext } from 'react';
+import { SomeContext } from "./Provider";
 
-export default function GraphStats(props) {
+export default function GraphStats() {
+    const [context, _] = useContext(SomeContext)
+    const { caseType } = context;
     return (
         <Aux>
             <div className="graph_heading">
-                <h3 className="title">Worldwide cases</h3>
-                <FormControl>
-                    <Select
-                        variant="outlined"
-                        value={props.casesType}
-                        onChange={props.onCaseTypeChange}>
-                        {
-                            Object.keys(props.caseTypes).map(key =>
-                                <MenuItem key={props.caseTypes[key].title} value={props.caseTypes[key].value}>{props.caseTypes[key].title}</MenuItem>
-                            )
-                        }
-                    </Select>
-                </FormControl>
+                <h3 className="title">{caseTypes[caseType].title} cases</h3>
             </div>
-            <LineGraph casesType={props.casesType} />
+            <LineGraph casesType={caseType} />
         </Aux>
     )
 }

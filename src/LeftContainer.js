@@ -1,33 +1,45 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { FormControl, Select, MenuItem } from '@material-ui/core';
+import { useState, useEffect, useContext } from 'react';
+import { MenuItem } from '@material-ui/core';
 import './App.css';
-import InfoBox from './InfoBox';
+import InfoBoxStats from './InfoBoxStats';
 import Map from './Map';
 import 'leaflet/dist/leaflet.css';
-import { BASE_URL as baseURL } from './constants';
+import { WORLDWIDEDATA_URL as worldWideDataURL, COUNTRYSPECIFICDATA_URL as countrySpecificDataURL } from './constants';
+import { pushAtBeginning } from './util';
+import { SomeContext } from "./Provider";
+import { caseTypes } from './constants';
+import Header from './Header';
 
 export default function LeftContainer() {
+    const [_, setContext] = useContext(SomeContext)
     const [countries, setCountries] = useState([])
     const [country, setCountry] = useState('worldwide')
     const [countryInfo, setCountryInfo] = useState({})
-    const details = {
-        cases: { title: "Cases", cases: countryInfo.todayCases, total: countryInfo.cases },
-        recovered: { title: "Recovered", cases: countryInfo.todayRecovered, total: countryInfo.recovered },
-        deaths: { title: "Deaths", cases: countryInfo.todayDeaths, total: countryInfo.deaths }
-    };
     const [mapCenter, setMapCenter] = useState({ lat: 34.80, lng: -40.47 })
     const [mapZoom, setMapZoom] = useState(3)
     const [mapCountries, setMapCountries] = useState([])
-    const items = Object.keys(details).map(key =>
-        <InfoBox key={key} title={details[key].title} cases={details[key].cases} total={details[key].total} />
+    const [casesType, setCasesType] = useState(caseTypes.cases.value);
+
+    // Case type dropdown items and on change command
+    const casesDropdownItems = Object.keys(caseTypes).map(key =>
+        <MenuItem key={caseTypes[key].title} value={caseTypes[key].value}>{caseTypes[key].title}</MenuItem>
     );
-    const worldWideDataURL = baseURL + "all";
-    const countrySpecificDataURL = baseURL + "countries/";
+    const onCaseTypeChange = async (event) => {
+        const caseType = await event.target.value;
+        setCasesType(caseType);
+        await setContext({ caseType: caseType })
+    }
+
+    // Country dropdown items and on change command
+    const countryDropdownItems = countries.map(country => (
+        <MenuItem key={country.name} value={country.value}>{country.name}</MenuItem>
+    ));
+    pushAtBeginning(countryDropdownItems, <MenuItem key='worldwide' value='worldwide'>World Wide</MenuItem>);
     const onCountryChange = async (event) => {
         const countryValue = event.target.value;
         await setCountry(countryValue);
-        const url = countryValue === 'worldwide' ? worldWideDataURL : countrySpecificDataURL + countryValue;
+        const url = countryValue === 'worldwide' ? worldWideDataURL : countrySpecificDataURL + "/" + countryValue;
         await fetch(url)
             .then(r => r.json())
             .then(data => {
@@ -64,25 +76,14 @@ export default function LeftContainer() {
     }, [])
     return (
         <div className="app_left">
-            <div className="app_header">
-                <h1>COVID-19 Tracker</h1>
-                <FormControl>
-                    <Select
-                        variant="outlined"
-                        value={country}
-                        onChange={onCountryChange}>
-                        <MenuItem key='worldwide' value='worldwide'>World Wide</MenuItem>
-                        {
-                            countries.map(country => (
-                                <MenuItem key={country.name} value={country.value}>{country.name}</MenuItem>
-                            ))
-                        }
-                    </Select>
-                </FormControl>
-            </div>
-            <div className="app_stats">
-                {items}
-            </div>
+            <Header
+                countryValue={country}
+                countryOnChange={onCountryChange}
+                countryItems={countryDropdownItems}
+                casesValue={casesType}
+                casesOnChange={onCaseTypeChange}
+                casesItems={casesDropdownItems} />
+            <InfoBoxStats countryInfo={countryInfo} />
             <Map center={mapCenter} zoom={mapZoom} countries={mapCountries} />
         </div>
     )

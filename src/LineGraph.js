@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import numeral from "numeral";
-import './LineGraph.css';
+import * as constants from './constants';
 
 const options = {
   legend: {
@@ -49,14 +49,14 @@ const options = {
   },
 };
 
-const buildChartData = (data, casesType) => {
+const buildChartData = (data, casesType = constants.NEW_CASES) => {
   let chartData = [];
   let lastDataPoint;
   for (let date in data.cases) {
     if (lastDataPoint) {
       let newDataPoint = {
         x: date,
-        y: data[casesType][date] - lastDataPoint,
+        y: casesType === constants.NEW_CASES ? data[casesType][date] - lastDataPoint : data[casesType][date]
       };
       chartData.push(newDataPoint);
     }
@@ -65,19 +65,20 @@ const buildChartData = (data, casesType) => {
   return chartData;
 };
 
+const url = constants.BASE_URL + "historical/all?lastdays=120";
+
 function LineGraph({ casesType }) {
   const [data, setData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=120")
+      await fetch(url)
         .then((response) => {
           return response.json();
         })
         .then((data) => {
           let chartData = buildChartData(data, casesType);
           setData(chartData);
-          console.log(chartData);
         });
     };
 
@@ -91,8 +92,8 @@ function LineGraph({ casesType }) {
           data={{
             datasets: [
               {
-                backgroundColor: "rgba(204, 16, 52, 0.5)",
-                borderColor: "#CC1034",
+                backgroundColor: constants.casesTypeColors[casesType].hex,
+                borderColor: constants.casesTypeColors[casesType].hex,
                 data: data,
               },
             ],
