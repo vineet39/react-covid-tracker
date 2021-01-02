@@ -1,0 +1,15 @@
+.app_header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+    .app_header {
+        flex-direction: column;
+    }
+    .app_header * {
+        margin-bottom: 20px;
+    }
+}

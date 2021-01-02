@@ -1,0 +1,10 @@
+.app_stats {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 600px) {
+    .app_stats {
+        flex-direction: column;
+    }
+}
