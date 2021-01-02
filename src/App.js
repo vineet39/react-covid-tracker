@@ -1,6 +1,5 @@
-import LeftContainer from './LeftContainer';
-import RightContainer from './RightContainer';
-import SomeProvider from './Provider';
+import LeftContainer from './LeftContainer/LeftContainer';
+import RightContainer from './RightContainer/RightContainer';
 
 function App() {
   return (

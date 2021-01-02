@@ -1,0 +1,9 @@
+.app_left {
+    flex: 0.9;
+}
+
+@media (max-width: 990px) {
+    .app_left {
+        margin-bottom: 20px;
+    }
+}

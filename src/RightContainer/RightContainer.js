@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, CardContent } from '@material-ui/core';
-import GraphStats from './GraphStats';
-import Table from './Table';
+import GraphStats from './Graph/GraphStats';
+import Table from './Table/Table';
+import './RightContainer.css';
 
 export default function RightContainer() {
     return (

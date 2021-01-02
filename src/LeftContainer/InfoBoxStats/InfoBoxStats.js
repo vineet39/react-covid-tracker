@@ -1,5 +1,6 @@
 import React from 'react';
-import InfoBox from './InfoBox';
+import InfoBox from '../../UI/InfoBox/InfoBox';
+import  './InfoBoxStats.css';
 
 export default function InfoBoxStats(props) {
     const details = {

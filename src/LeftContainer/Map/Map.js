@@ -3,9 +3,9 @@ import { MapContainer as LeafletMap, TileLayer, useMap } from 'react-leaflet';
 import './Map.css';
 import numeral from "numeral";
 import { Circle, Popup } from "react-leaflet";
-import * as constants from './constants';
+import * as constants from '../../constants';
 import { useContext } from 'react';
-import { SomeContext } from "./Provider";
+import { SomeContext } from "../../Provider";
 
 function Map(props) {
     const [context, _] = useContext(SomeContext)

@@ -1,15 +1,16 @@
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { MenuItem } from '@material-ui/core';
-import './App.css';
-import InfoBoxStats from './InfoBoxStats';
-import Map from './Map';
+import '../App.css';
+import InfoBoxStats from './InfoBoxStats/InfoBoxStats';
+import Map from './Map/Map';
 import 'leaflet/dist/leaflet.css';
-import { WORLDWIDEDATA_URL as worldWideDataURL, COUNTRYSPECIFICDATA_URL as countrySpecificDataURL } from './constants';
-import { pushAtBeginning } from './util';
-import { SomeContext } from "./Provider";
-import { caseTypes } from './constants';
-import Header from './Header';
+import { WORLDWIDEDATA_URL as worldWideDataURL, COUNTRYSPECIFICDATA_URL as countrySpecificDataURL } from '../constants';
+import { pushAtBeginning } from '../util';
+import { SomeContext } from "../Provider";
+import { caseTypes } from '../constants';
+import Header from './Header/Header';
+import './LeftContainer.css';
 
 export default function LeftContainer() {
     const [_, setContext] = useContext(SomeContext)
