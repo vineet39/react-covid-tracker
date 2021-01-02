@@ -11,9 +11,6 @@ https://vineet39.github.io/react-covid-tracker/
 ## Tools, languages and frameworks used 
 ReactJS, HTML, CSS, Material-UI, API: https://disease.sh/v3/covid-19
 
-## Known issues
-* Code needs to be refactored and organised into folders.
-
 
 
 
